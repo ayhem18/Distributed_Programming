@@ -4,7 +4,7 @@ UDP_IP = 'localhost'#"<ip_address_of_receiver>"
 UDP_PORT = 9999
 MESSAGE = "Hi, can you listen to this?"
 ENCOD = "UTF-8"
-WAIT_TIME = 3
+WAIT_TIME = 300
 BUFFSIZE = 1024
 
 def parse_start_from_client(message):

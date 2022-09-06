@@ -12,7 +12,6 @@ import sys
 # * file_name: the filename as saved in the server
 # * last_seq_num: the last sequence number in an approved message: to avoid writing the same data twice
 # * last_time_stamp: the last time the client interacter with a server: to remove inactive clients
-# * is_complete: the file transfer is complete
 
 clients = {}
 # a set of files
@@ -26,7 +25,6 @@ c_l_seq = "last_seq_num"
 c_time = "last_time_stamp"
 c_data = "data"
 c_f_z = "file_size"
-c_is_complete = "is_complete"
 
 buffer_size = 4096  # the side of data accepted at each transfer
 ip = '127.0.0.1'
@@ -45,7 +43,6 @@ def add_client(address: tuple, seq_num: int, file_name: os.path, file_size: int)
         clients[address][c_f] = file_name
         clients[address][c_l_seq] = seq_num
         clients[address][c_f_z] = file_size
-        clients[address][c_is_complete] = False
     # for duplicate start messages, we update the time stamp
     clients[address][c_time] = time.time()
 
@@ -69,8 +66,6 @@ def update_client(address: tuple, seq_num: int, file_name: os.path, data: bytes)
         # second update the seq number
         clients[address][c_l_seq] = seq_num
         # print("just wrote data from {add} to file {f_name}".format(add=address, f_name=file_name))
-        # if the current size is the same as the final size passed by the start message
-        clients[address][c_is_complete] = (clients[address][c_f_z] == os.path.getsize(clients[address][c_f]))
     # regardless, update the last time stamp
     clients[address][c_time] = time.time()
 
@@ -111,53 +106,47 @@ def receive_data(address, data: bytes):
     return None
 
 
-max_inactive_time = 3.2 # a session inactive for 3 seconds should be removed
-save_complete_session = 1.2 # keep the information about a successful session before removing it
+max_inactive_time = 3200 # a session inactive for 3 seconds should be removed
+save_complete_session = 1200 # keep the information about a successful session before removing it
 
 
 def remove_sessions():
     now = time.time()
-    sessions_to_rmv = []
     for addr, client_info in clients.items():
         # remove session that were inactive for more than ~ 3 seconds
         if now - client_info[c_time] >= max_inactive_time:
             print("removing client with address {add} for being inactive".format(add=addr))
-            sessions_to_rmv.append(addr)
+            clients.pop(addr)
         # if the session is complete: the size given in the start packet is equal to the size stored in the server
         # as well as the time constraint, then remove the session's info
-        elif now - client_info[c_time] >= save_complete_session and client_info[c_is_complete]:
+        if now - client_info[c_time] >= save_complete_session \
+                and client_info[c_f_z] == os.path.getsize(client_info[c_f]):
             print("removing client with address {add} after completing the session successfully".format(add=addr))
-            sessions_to_rmv.append(addr)
-
-    # remove the sessions
-    print("before removing " + str(sessions_to_rmv))
-    for sess in sessions_to_rmv:
-        clients.pop(sess)
-    print("after removing " + str(sessions_to_rmv))
-
+            clients.pop(addr)
 
 def server(port: int):
     with sk.socket(sk.AF_INET, sk.SOCK_DGRAM) as s:
         s.bind((ip, port))
-        s.settimeout(save_complete_session) # this will make the
         while True:
-            try:
-                data, addr = s.recvfrom(buffer_size)
-                client_address = addr
-                ack = receive_data(client_address, data)
-                if ack is not None:
-                    s.sendto(ack, addr)
-                    # remove sessions after sending any ack
-                    remove_sessions()
+            data, addr = s.recvfrom(buffer_size)
+            client_address = addr
+            ack = receive_data(client_address, data)
+            if ack is not None:
+                s.sendto(ack, addr)
 
-            except:
-                remove_sessions()
+            remove_sessions()
+            print(clients.keys())
 
 
 def main():
     args = sys.argv
     assert len(args) == 2  # make sure the port number is passed
     server(int(args[1]))
+
+
+def main1():
+    server(8884)
+
 
 if __name__ == "__main__":
     main()

@@ -31,10 +31,10 @@ sock.settimeout(WAIT_TIME)
 # send start message from client to server
 # "s | seqno_0 | filename | size "
 
-filee = open("/home/yy7/my-repos/dirstibuted-networks/lab1/file.jpg", "rb").read()
+filee = open("../test_files/test.png", "rb").read()
 
 seqno_0 = 0
-filename = "file.jpg"
+filename = "amad.png"
 file_size = len(filee)
 
 server_bufsize = 1024

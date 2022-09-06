@@ -5,7 +5,7 @@
 
 start_code = 's'
 data_code = 'd'
-delimiter = " | "
+delimiter = "|"
 ack_code = 'a'
 ENCODE = 'UTF-8'
 
