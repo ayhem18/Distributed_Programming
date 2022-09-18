@@ -8,16 +8,18 @@ OUTPUT_PORT = 5556
 
 def client(input_port: int, output_port: int):
     # creating context
-    context = zmq.Context()
+    req_context = zmq.Context()
 
     # create a socket responsible for sending messages
-    sending_socket = context.socket(zmq.REQ)
+    sending_socket = req_context.socket(zmq.REQ)
     print("Connecting to the server: input side")
     sending_socket.connect(connect_string(input_port))
 
+    # create context for subscriber
+    sub_context = zmq.Context()
     # create a socket responsible for receiving replies from server
     # this socket is a subscriber
-    receiving_socket = context.socket(zmq.SUB)
+    receiving_socket = sub_context.socket(zmq.SUB)
     print("Connecting to the server: output side")
     receiving_socket.connect(connect_string(output_port))
     # subscribe (otherwise no messages will be received)
@@ -25,19 +27,22 @@ def client(input_port: int, output_port: int):
     receiving_socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
     try:
+        sending = False
         while True:
             # prompt the user for input
-            # user_input = input("> ")
-            # if len(user_input) != 0:
-            #     # this means the user entered input
-            #     # send the passed string to the input
-            #     sending_socket.send_string(user_input)
+            user_input = input("> ")
+            if len(user_input) != 0:
+                # this means the user entered input
+                # send the passed string to the input
+                sending_socket.send_string(user_input)
+                sending = True
             try:
-                while True:
+                while sending:
                     # receive the reply from the server
                     print("enter 2nd while loop!!")
-                    server_reply = receiving_socket.recv()
+                    server_reply = sending_socket.recv_string()
                     print("Server's reply: {r}".format(r=server_reply))
+                    sending = False
             except zmq.Again:
                 pass
 
