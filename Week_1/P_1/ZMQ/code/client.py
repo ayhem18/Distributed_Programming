@@ -25,9 +25,10 @@ def client(input_port: int, output_port: int):
     # subscribe (otherwise no messages will be received)
     # the subscriber should receive any possible string
     receiving_socket.setsockopt_string(zmq.SUBSCRIBE, "")
+    # 100 seconds time out
+    receiving_socket.RCVTIMEO = 100
 
     try:
-        sending = False
         while True:
             # prompt the user for input
             user_input = input("> ")
@@ -35,20 +36,19 @@ def client(input_port: int, output_port: int):
                 # this means the user entered input
                 # send the passed string to the input
                 sending_socket.send_string(user_input)
-                sending = True
+                sending_socket.recv_string()
+
             try:
-                while sending:
-                    # receive the reply from the server
-                    print("enter 2nd while loop!!")
-                    server_reply = sending_socket.recv_string()
-                    print("Server's reply: {r}".format(r=server_reply))
-                    sending = False
+                # receive the reply from the server
+                print("enter 2nd while loop!!")
+                server_reply = receiving_socket.recv_string()
+                print("Server's reply: {r}".format(r=server_reply))
             except zmq.Again:
                 pass
 
     # a keyboard Interrupt means the client is terminated
     except KeyboardInterrupt:
-        print("Terminating client")
+        print("\n Terminating client")
         sys.exit(0)
 
 

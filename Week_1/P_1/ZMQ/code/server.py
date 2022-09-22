@@ -9,51 +9,66 @@ WORKER_IN = 8888
 WORKER_OUT = 8889
 
 
-def server(c_in: int, c_out: int, w_in: int, w_out: int):
+def server(p1: int, p2: int, p3: int, p4: int):
+    context = zmq.Context()
+
     # define the general context
-    c_in_context = zmq.Context()
+    #c_in_context = zmq.Context()
     # socket for user input
-    c_in_socket = c_in_context.socket(zmq.REP)
-    c_in_socket.bind(h.bind_string(c_in))
+    c_in_socket = context.socket(zmq.REP)
+    c_in_socket.bind(h.bind_string(p1))
 
     # socket for user output
-    c_out_context = zmq.Context()
-    c_out_socket = c_out_context.socket(zmq.PUB)
-    c_out_socket.bind(h.bind_string(c_out))
+    #c_out_context = zmq.Context()
+    c_out_socket = context.socket(zmq.PUB)
+    c_out_socket.bind(h.bind_string(p2))
 
     # socket for worker input
-    w_in_context = zmq.Context()
-    w_in_socket = w_in_context.socket(zmq.PUB)
-    w_in_socket.bind(h.bind_string(w_in))
+    #w_in_context = zmq.Context()
+    w_in_socket = context.socket(zmq.PUB)
+    w_in_socket.bind(h.bind_string(p3))
 
     # socket for worker output
-    w_out_context = zmq.Context()
-    w_out_socket = w_out_context.socket(zmq.SUB)
-    w_out_socket.connect(h.connect_string(w_out))
+    #w_out_context = zmq.Context()
+    w_out_socket = context.socket(zmq.SUB)
+    w_out_socket.bind(h.bind_string(p4))
     w_out_socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
     while True:
         try:
             req = c_in_socket.recv_string()
             print(f"processing request: {req}")
+            # send confirmation::
+            c_in_socket.send_string("Message received")
+            # verification string
 
             if h.is_valid_request(req):
                 print("valid request")
-                print("pass to our back servers")
+                print("pass to our back servers")  # primer / gcder
                 w_in_socket.send_string(req)
                 print("waiting for a reply from back servers")
-                reply = w_out_socket.recv_string()
-                print(f"The servers replied with {reply}")
-                print("sending the reply")
-                c_in_socket.send_string(reply)
+                try:
+                    reply = w_out_socket.recv_string()
+                    print(f"The servers replied with {reply}")
+                    print("sending the reply")
+                except zmq.ZMQError:
+                    continue
+                except:
+                    continue
+                c_out_socket.send_string(reply)
 
-            elif req:
-                print("the request does not follow the format")
-                print("sending back as it is")
-                # c_out_socket.send_string(req)
-                c_in_socket.send_string(req)
+            else:
+                c_out_socket.send_string(req)
+            # elif req:
+            #     print("the request does not follow the format")
+            #     print("sending back as it is")
+            #     # c_out_socket.send_string(req)
+            #     c_out_socket.send_string(req)
         except zmq.Again:
             pass
+        except KeyboardInterrupt:
+            print("\n SERVER TERMINATED !!!")
+            sys.exit()
 
 
 def main():

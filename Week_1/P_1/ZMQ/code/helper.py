@@ -4,8 +4,8 @@ import re
 import zmq
 
 from primer import PRIMER_FILTER
-from gcd_er import GCD_ER_FILTER
-
+from gcd import GCD_ER_FILTER
+from math import floor
 
 def connect_string(port: int):
     return "tcp://localhost:{p}".format(p=str(port))
@@ -35,15 +35,15 @@ def gcd(a: int, b: int) -> int:
     if a < 0 or b < 0:
         return gcd(int(abs(a)), int(abs(b)))
 
-    if a == 1 or b == 1:
-        return 1
-
     if a == 0 or b == 0:
         return max(a, b)
 
+    if a == 1 or b == 1:
+        return 1
+
     min_num = min(a, b)
     max_num = max(a, b)
-    return gcd(max_num - min_num, min_num)
+    return gcd(max_num - floor(max_num / min_num) * min_num, min_num)
 
 
 def is_valid_request(string: str):
@@ -51,6 +51,7 @@ def is_valid_request(string: str):
     gcd_er_regex = GCD_ER_FILTER + r'[\s]+(-){0,1}[\d]+[\s](-){0,1}[\d]+'
     primer_match = re.match(primer_regex, string)
     gcd_er_match = re.match(gcd_er_regex, string)
+
     if primer_match is None and gcd_er_match is None:
         return False
     if primer_match:
@@ -59,7 +60,7 @@ def is_valid_request(string: str):
     return gcd_er_match.end() - gcd_er_match.start() == len(string)
 
 
-def back_server(in_port: int, out_port: int, reply_function, str_filter):
+def back_server(in_port: int, out_port: int, reply_function, str_filter: str):
     # create context for receiving data
     sub_context = zmq.Context()
 
@@ -76,13 +77,20 @@ def back_server(in_port: int, out_port: int, reply_function, str_filter):
 
     # create the publisher socket: sending the results of requests
     pub_socket = pub_context.socket(zmq.PUB)
-    pub_socket.bind(bind_string(out_port))
+    pub_socket.connect(connect_string(out_port))
 
     while True:
         try:
-            request = sub_socket.recv_string()
+            try:
+                request = sub_socket.recv_string()
+            except zmq.Again:
+                continue
+
             print(f"received {request}")
-            rep_req = reply_function(request)
+            try:
+                rep_req = reply_function(request)
+            except:
+                continue
             pub_socket.send_string(rep_req)
             print(f'sent the {rep_req}')
         except zmq.Again:

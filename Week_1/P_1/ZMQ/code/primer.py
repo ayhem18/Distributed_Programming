@@ -1,12 +1,13 @@
 import sys
 import helper as h
 from server import WORKER_IN, WORKER_OUT
+import re
 
 PRIMER_FILTER = "isprime"
 
 
 def prime_reply(request: str):
-    num = int(request.split(r'[\s]')[1])
+    num = int(re.split(r'\s+', request)[1])
     return f"{str(num)} is {'' if h.is_prime(num) else 'not'} prime"
 
 
