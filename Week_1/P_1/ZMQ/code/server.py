@@ -12,24 +12,16 @@ WORKER_OUT = 8889
 def server(p1: int, p2: int, p3: int, p4: int):
     context = zmq.Context()
 
-    # define the general context
-    #c_in_context = zmq.Context()
     # socket for user input
     c_in_socket = context.socket(zmq.REP)
     c_in_socket.bind(h.bind_string(p1))
 
-    # socket for user output
-    #c_out_context = zmq.Context()
     c_out_socket = context.socket(zmq.PUB)
     c_out_socket.bind(h.bind_string(p2))
 
-    # socket for worker input
-    #w_in_context = zmq.Context()
     w_in_socket = context.socket(zmq.PUB)
     w_in_socket.bind(h.bind_string(p3))
 
-    # socket for worker output
-    #w_out_context = zmq.Context()
     w_out_socket = context.socket(zmq.SUB)
     w_out_socket.bind(h.bind_string(p4))
     w_out_socket.setsockopt_string(zmq.SUBSCRIBE, "")
@@ -49,8 +41,8 @@ def server(p1: int, p2: int, p3: int, p4: int):
                 print("waiting for a reply from back servers")
                 try:
                     reply = w_out_socket.recv_string()
-                    print(f"The servers replied with {reply}")
-                    print("sending the reply")
+                    print(f"The servers replied with :{reply}")
+                    print(f"sending the reply: {reply}")
                 except zmq.ZMQError:
                     continue
                 except:
@@ -58,6 +50,7 @@ def server(p1: int, p2: int, p3: int, p4: int):
                 c_out_socket.send_string(reply)
 
             else:
+                print(f"sending this reply to the client: {req}")
                 c_out_socket.send_string(req)
             # elif req:
             #     print("the request does not follow the format")

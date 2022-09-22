@@ -7,19 +7,15 @@ OUTPUT_PORT = 5556
 
 
 def client(input_port: int, output_port: int):
-    # creating context
-    req_context = zmq.Context()
-
+    context = zmq.Context()
     # create a socket responsible for sending messages
-    sending_socket = req_context.socket(zmq.REQ)
+    sending_socket = context.socket(zmq.REQ)
     print("Connecting to the server: input side")
     sending_socket.connect(connect_string(input_port))
 
-    # create context for subscriber
-    sub_context = zmq.Context()
     # create a socket responsible for receiving replies from server
     # this socket is a subscriber
-    receiving_socket = sub_context.socket(zmq.SUB)
+    receiving_socket = context.socket(zmq.SUB)
     print("Connecting to the server: output side")
     receiving_socket.connect(connect_string(output_port))
     # subscribe (otherwise no messages will be received)
@@ -32,6 +28,7 @@ def client(input_port: int, output_port: int):
         while True:
             # prompt the user for input
             user_input = input("> ")
+            myReply = False
             if len(user_input) != 0:
                 # this means the user entered input
                 # send the passed string to the input
@@ -40,9 +37,11 @@ def client(input_port: int, output_port: int):
 
             try:
                 # receive the reply from the server
-                print("enter 2nd while loop!!")
+                # print("enter 2nd while loop!!")
                 server_reply = receiving_socket.recv_string()
-                print("Server's reply: {r}".format(r=server_reply))
+
+                print(f"Server replied with : {server_reply}")
+
             except zmq.Again:
                 pass
 

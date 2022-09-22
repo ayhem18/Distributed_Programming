@@ -95,5 +95,6 @@ def back_server(in_port: int, out_port: int, reply_function, str_filter: str):
             print(f'sent the {rep_req}')
         except zmq.Again:
             pass
-
+        except KeyboardInterrupt:
+            print("\nSERVER TERMINATED !!")
 
