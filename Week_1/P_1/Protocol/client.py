@@ -1,3 +1,5 @@
+import sys
+
 import grpc
 import service_pb2_grpc as pb2_grpc
 import service_pb2 as pb2
@@ -71,8 +73,8 @@ def generate_messages(numbers: list):
         yield msg
 
 
-def main():
-    channel = grpc.insecure_channel("127.0.0.1:5555")
+def main(server_addr: str = "127.0.0.1:5555"):
+    channel = grpc.insecure_channel(server_addr)
     # set the reverse service
     client_reverse = pb2_grpc.reverseStub(channel)
 
@@ -118,4 +120,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args = sys.argv
+    if len(args) >= 2:
+        main(args[1])
+    else:
+        main()
+
