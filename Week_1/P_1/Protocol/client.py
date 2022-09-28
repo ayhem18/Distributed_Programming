@@ -3,16 +3,23 @@ import service_pb2_grpc as pb2_grpc
 import service_pb2 as pb2
 import re
 
+EXIT = 'exit'
+CLIENT_TERMINATING = "CLIENT TERMINATING"
+PATTERN_WARNING = "DEAR USER PLEASE MAKE SURE YOU FORMAT YOUR INPUT PROPERLY\n" \
+                  "reverse(any number of white spaces)any_string\n" \
+                  "isprime(whitespaces)(integer)(whitespaces)(integer)....\n" \
+                  "split(whitespaces)any_string\n"
+
 
 def is_reverse_command(string):
 
     pattern = r'reverse\s+.+'
     match = re.match(pattern, string)
     if match is None:
-        print(f"{string} does not respect the reverse command pattern")
+        # print(f"{string} does not respect the reverse command pattern")
         return None
     if match.end() - match.start() != len(string):  # check if the entire string matches with the pattern
-        print(f"{string} partially matches with the pattern")
+        # print(f"{string} partially matches with the pattern")
         return None
 
     splits = re.split(r'\s+', string)
@@ -25,12 +32,12 @@ def is_split_command(string):
     match = re.match(pattern, string)
 
     if match is None:
-        print(f"{string} does not respect the split command pattern")
+        # print(f"{string} does not respect the split command pattern")
         return None
 
     # the match object is not None: the beginning of the string match with the pattern
     if match.end() - match.start() != len(string):  # check if the entire string matches with the pattern
-        print(f"{string} partially matches with the pattern")
+        # print(f"{string} partially matches with the pattern")
         return None
 
     parts = re.split(r'\s+', string)
@@ -45,12 +52,12 @@ def is_prime_command(string):
     match = re.match(pattern, string)
 
     if match is None:
-        print(f"{string} does not respect the isprime command pattern")
+        # print(f"{string} does not respect the isprime command pattern")
         return None
 
     # the match object is not None: the beginning of the string match with the pattern
     if match.end() - match.start() != len(string):  # check if the entire string matches with the pattern
-        print(f"{string} partially matches with the pattern")
+        # print(f"{string} partially matches with the pattern")
         return None
 
     numbers = re.split(r"\s+", string)
@@ -76,7 +83,7 @@ def main():
     client_is_prime = pb2_grpc.isPrimeStub(channel)
 
     while True:
-        user_input = input("Please enter your command\n")
+        user_input = input("Please enter your command\n").strip().lower()
 
         # check if the command is prime number verification
 
@@ -101,6 +108,13 @@ def main():
         if text_to_reverse is not None:
             reverse_request = pb2.ReverseRequest(text=text_to_reverse)
             print(client_reverse.ReverseString(reverse_request))
+            continue
+
+        if user_input == EXIT:
+            print(CLIENT_TERMINATING)
+            break
+
+        print(PATTERN_WARNING)
 
 
 if __name__ == "__main__":
