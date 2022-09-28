@@ -1,0 +1,43 @@
+syntax='proto3';
+// the reverse service
+
+service reverse {
+  rpc ReverseString (ReverseRequest) returns (ReverseReply);
+}
+
+message ReverseRequest {
+  string text = 1;
+}
+
+message ReverseReply {
+  string message = 1;
+}
+
+// the split service
+service split {
+  rpc splitString (SplitRequest) returns (SplitReply);
+}
+
+message SplitRequest {
+  string text = 1;
+  string delimiter = 2;
+}
+
+message SplitReply {
+  int32 number = 1;
+  repeated string parts = 2;
+}
+
+// the is prime service
+
+service isPrime {
+  rpc is_prime(stream isPrimeRequest) returns (stream isPrimeReply);
+}
+
+message isPrimeRequest {
+  int32 number = 1;
+}
+
+message isPrimeReply {
+  string number_primer = 1;
+}
