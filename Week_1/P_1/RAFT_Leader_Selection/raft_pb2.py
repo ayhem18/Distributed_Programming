@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nraft.proto\"\x12\n\x10GetLeaderRequest\"-\n\x0eGetLeaderReply\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0f\n\x07\x61\x64\x64ress\x18\x02 \x01(\t\" \n\x0eSuspendRequest\x12\x0e\n\x06period\x18\x01 \x01(\x05\"\x0e\n\x0cSuspendReply2d\n\x06server\x12/\n\tgetLeader\x12\x11.GetLeaderRequest\x1a\x0f.GetLeaderReply\x12)\n\x07suspend\x12\x0f.SuspendRequest\x1a\r.SuspendReplyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nraft.proto\"\x12\n\x10GetLeaderRequest\"-\n\x0eGetLeaderReply\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0f\n\x07\x61\x64\x64ress\x18\x02 \x01(\t\" \n\x0eSuspendRequest\x12\x0e\n\x06period\x18\x01 \x01(\x05\"\x0e\n\x0cSuspendReply\"0\n\x0bVoteRequest\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x13\n\x0b\x63\x61ndidateId\x18\x02 \x01(\x05\")\n\tVoteReply\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x0e\n\x06result\x18\x02 \x01(\x08\"0\n\rAppendRequest\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x11\n\tleader_id\x18\x02 \x01(\x05\"+\n\x0b\x41ppendReply\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x0e\n\x06result\x18\x02 \x01(\x08\x32\xbc\x01\n\x06server\x12/\n\tgetLeader\x12\x11.GetLeaderRequest\x1a\x0f.GetLeaderReply\x12)\n\x07suspend\x12\x0f.SuspendRequest\x1a\r.SuspendReply\x12\'\n\x0brequestVote\x12\x0c.VoteRequest\x1a\n.VoteReply\x12-\n\rappendEntries\x12\x0e.AppendRequest\x1a\x0c.AppendReplyb\x06proto3')
 
 
 
@@ -22,6 +22,10 @@ _GETLEADERREQUEST = DESCRIPTOR.message_types_by_name['GetLeaderRequest']
 _GETLEADERREPLY = DESCRIPTOR.message_types_by_name['GetLeaderReply']
 _SUSPENDREQUEST = DESCRIPTOR.message_types_by_name['SuspendRequest']
 _SUSPENDREPLY = DESCRIPTOR.message_types_by_name['SuspendReply']
+_VOTEREQUEST = DESCRIPTOR.message_types_by_name['VoteRequest']
+_VOTEREPLY = DESCRIPTOR.message_types_by_name['VoteReply']
+_APPENDREQUEST = DESCRIPTOR.message_types_by_name['AppendRequest']
+_APPENDREPLY = DESCRIPTOR.message_types_by_name['AppendReply']
 GetLeaderRequest = _reflection.GeneratedProtocolMessageType('GetLeaderRequest', (_message.Message,), {
   'DESCRIPTOR' : _GETLEADERREQUEST,
   '__module__' : 'raft_pb2'
@@ -50,6 +54,34 @@ SuspendReply = _reflection.GeneratedProtocolMessageType('SuspendReply', (_messag
   })
 _sym_db.RegisterMessage(SuspendReply)
 
+VoteRequest = _reflection.GeneratedProtocolMessageType('VoteRequest', (_message.Message,), {
+  'DESCRIPTOR' : _VOTEREQUEST,
+  '__module__' : 'raft_pb2'
+  # @@protoc_insertion_point(class_scope:VoteRequest)
+  })
+_sym_db.RegisterMessage(VoteRequest)
+
+VoteReply = _reflection.GeneratedProtocolMessageType('VoteReply', (_message.Message,), {
+  'DESCRIPTOR' : _VOTEREPLY,
+  '__module__' : 'raft_pb2'
+  # @@protoc_insertion_point(class_scope:VoteReply)
+  })
+_sym_db.RegisterMessage(VoteReply)
+
+AppendRequest = _reflection.GeneratedProtocolMessageType('AppendRequest', (_message.Message,), {
+  'DESCRIPTOR' : _APPENDREQUEST,
+  '__module__' : 'raft_pb2'
+  # @@protoc_insertion_point(class_scope:AppendRequest)
+  })
+_sym_db.RegisterMessage(AppendRequest)
+
+AppendReply = _reflection.GeneratedProtocolMessageType('AppendReply', (_message.Message,), {
+  'DESCRIPTOR' : _APPENDREPLY,
+  '__module__' : 'raft_pb2'
+  # @@protoc_insertion_point(class_scope:AppendReply)
+  })
+_sym_db.RegisterMessage(AppendReply)
+
 _SERVER = DESCRIPTOR.services_by_name['server']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -62,6 +94,14 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SUSPENDREQUEST._serialized_end=113
   _SUSPENDREPLY._serialized_start=115
   _SUSPENDREPLY._serialized_end=129
-  _SERVER._serialized_start=131
-  _SERVER._serialized_end=231
+  _VOTEREQUEST._serialized_start=131
+  _VOTEREQUEST._serialized_end=179
+  _VOTEREPLY._serialized_start=181
+  _VOTEREPLY._serialized_end=222
+  _APPENDREQUEST._serialized_start=224
+  _APPENDREQUEST._serialized_end=272
+  _APPENDREPLY._serialized_start=274
+  _APPENDREPLY._serialized_end=317
+  _SERVER._serialized_start=320
+  _SERVER._serialized_end=508
 # @@protoc_insertion_point(module_scope)

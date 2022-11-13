@@ -3,6 +3,8 @@ syntax='proto3';
 service server {
   rpc getLeader (GetLeaderRequest) returns (GetLeaderReply);
   rpc suspend(SuspendRequest) returns (SuspendReply);
+  rpc requestVote(VoteRequest) returns (VoteReply);
+  rpc appendEntries(AppendRequest) returns (AppendReply);
 }
 
 // the object the client sends when asking for the current leader
@@ -23,5 +25,23 @@ message SuspendRequest {
 // the object the server replies with after a suspend request
 message SuspendReply {}
 
+// the object the client sends to a server to ask for a vote
+message VoteRequest {
+  int32 term = 1;
+  int32 candidateId = 2;
+}
 
+message VoteReply {
+  int32 term = 1;
+  bool result = 2;
+}
 
+message AppendRequest {
+  int32 term = 1;
+  int32 leader_id = 2;
+}
+
+message AppendReply {
+  int32 term = 1;
+  bool result = 2;
+}

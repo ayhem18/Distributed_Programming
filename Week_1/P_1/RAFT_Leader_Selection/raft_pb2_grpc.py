@@ -24,6 +24,16 @@ class serverStub(object):
                 request_serializer=raft__pb2.SuspendRequest.SerializeToString,
                 response_deserializer=raft__pb2.SuspendReply.FromString,
                 )
+        self.requestVote = channel.unary_unary(
+                '/server/requestVote',
+                request_serializer=raft__pb2.VoteRequest.SerializeToString,
+                response_deserializer=raft__pb2.VoteReply.FromString,
+                )
+        self.appendEntries = channel.unary_unary(
+                '/server/appendEntries',
+                request_serializer=raft__pb2.AppendRequest.SerializeToString,
+                response_deserializer=raft__pb2.AppendReply.FromString,
+                )
 
 
 class serverServicer(object):
@@ -41,6 +51,18 @@ class serverServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def requestVote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def appendEntries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_serverServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +75,16 @@ def add_serverServicer_to_server(servicer, server):
                     servicer.suspend,
                     request_deserializer=raft__pb2.SuspendRequest.FromString,
                     response_serializer=raft__pb2.SuspendReply.SerializeToString,
+            ),
+            'requestVote': grpc.unary_unary_rpc_method_handler(
+                    servicer.requestVote,
+                    request_deserializer=raft__pb2.VoteRequest.FromString,
+                    response_serializer=raft__pb2.VoteReply.SerializeToString,
+            ),
+            'appendEntries': grpc.unary_unary_rpc_method_handler(
+                    servicer.appendEntries,
+                    request_deserializer=raft__pb2.AppendRequest.FromString,
+                    response_serializer=raft__pb2.AppendReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +127,39 @@ class server(object):
         return grpc.experimental.unary_unary(request, target, '/server/suspend',
             raft__pb2.SuspendRequest.SerializeToString,
             raft__pb2.SuspendReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def requestVote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/server/requestVote',
+            raft__pb2.VoteRequest.SerializeToString,
+            raft__pb2.VoteReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def appendEntries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/server/appendEntries',
+            raft__pb2.AppendRequest.SerializeToString,
+            raft__pb2.AppendReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
