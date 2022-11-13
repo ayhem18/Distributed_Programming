@@ -16,7 +16,7 @@ NUM_THREADS = 5
 SERVER_SHUT_DOWN = "SERVER SHUTTING DOWN"
 MAX_CLIENTS = 50
 WORKERS = 5
-
+TIMEOUT = 1
 
 def display_working_thread(client_addr):
     print("{t_name} is serving the client with address {c_addr}".
@@ -63,6 +63,7 @@ def server(port: int):
                 # listening for the connections
                 s.listen()
                 conn, addr = s.accept()
+
                 print("adding connection " + str(addr) + " to the queue")
                 jobs_queue.put((conn, addr))  # adding the client's info to the queue
         except KeyboardInterrupt:

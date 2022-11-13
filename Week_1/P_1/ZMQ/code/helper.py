@@ -7,6 +7,7 @@ from primer import PRIMER_FILTER
 from gcd import GCD_ER_FILTER
 from math import floor
 
+
 def connect_string(port: int):
     return "tcp://localhost:{p}".format(p=str(port))
 

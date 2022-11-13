@@ -28,7 +28,6 @@ def client(input_port: int, output_port: int):
         while True:
             # prompt the user for input
             user_input = input("> ")
-            myReply = False
             if len(user_input) != 0:
                 # this means the user entered input
                 # send the passed string to the input

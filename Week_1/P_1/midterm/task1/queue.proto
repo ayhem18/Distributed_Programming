@@ -1,0 +1,43 @@
+syntax='proto3';
+// the reverse service
+
+service queue   {
+  rpc PutItem(PutRequest) returns (PutReply) {};
+  rpc Peek(PeekRequest) returns (PeekReply) {};
+  rpc Pop(PopRequest) returns (PopReply) {};
+  rpc Size(SizeRequest) returns (SizeReply) {};
+
+}
+
+message PutRequest {
+  string item = 1;
+}
+
+message PutReply {
+  bool result = 1;
+}
+
+message PeekRequest {
+}
+
+message PeekReply {
+  string item = 1;
+  bool result = 2;
+}
+
+message PopRequest {
+}
+
+message PopReply {
+  string item = 1;
+  bool result = 2;
+}
+
+message SizeRequest {
+
+}
+
+message SizeReply {
+  int32 size = 1;
+}
+

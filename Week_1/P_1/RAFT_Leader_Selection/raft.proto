@@ -1,0 +1,27 @@
+syntax='proto3';
+
+service server {
+  rpc getLeader (GetLeaderRequest) returns (GetLeaderReply);
+  rpc suspend(SuspendRequest) returns (SuspendReply);
+}
+
+// the object the client sends when asking for the current leader
+message GetLeaderRequest {
+}
+
+// the object the server replies with to give information about the current leader
+message GetLeaderReply {
+  int32 id = 1;
+  string address = 2;
+}
+
+// the object the client sends to a server to suspend its functionality for a while
+message SuspendRequest {
+  int32 period = 1;
+}
+
+// the object the server replies with after a suspend request
+message SuspendReply {}
+
+
+
