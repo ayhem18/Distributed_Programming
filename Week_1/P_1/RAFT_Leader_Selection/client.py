@@ -7,6 +7,7 @@ import re
 
 QUIT = 'quit'
 CLIENT_TERMINATING = "CLIENT TERMINATING"
+PROMPT_INPUT = "\nPlease enter a command\n"
 
 
 def is_reverse_command(string):
@@ -86,9 +87,6 @@ def connect_command(text: str):
         # return re.split(r":", complete_addr)
         return complete_addr
     return None
-
-
-PROMPT_INPUT = "\nPlease enter a command\n"
 
 
 def main():
