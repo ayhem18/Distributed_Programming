@@ -19,7 +19,7 @@ message GetLeaderReply {
 
 // the object the client sends to a server to suspend its functionality for a while
 message SuspendRequest {
-  int32 period = 1;
+  float period = 1;
 }
 
 // the object the server replies with after a suspend request

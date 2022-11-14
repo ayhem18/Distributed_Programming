@@ -19,8 +19,8 @@ class RepeatedTimer(object):
         self.is_running = False
         self.start()
         return_value = self.function(*self.args, **self.kwargs)
-        print("Return values from the self.function")
-        print(return_value)
+        # print(f"Return values from the self.function: {str(self.function)}")
+        # print(return_value)
         # checking if the self.stop_function is set and if the return value should stop the object from running
         if self.stop_function and self.stop_function(return_value):
             self.stop()
@@ -38,6 +38,15 @@ class RepeatedTimer(object):
         self.is_running = False
 
 
+def close_timer(timer):
+    try:
+        if isinstance(timer, threading.Timer):
+            timer.cancel()
+        elif isinstance(timer, RepeatedTimer):
+            timer.stop()
+    except AttributeError:
+        pass
+
 def f():
     num = random.random()
     print(num)
@@ -52,5 +61,10 @@ def negate(value):
 
 if __name__ == "__main__":
     # n = 5
-    rep = RepeatedTimer(1, f, negate)
+    rep = RepeatedTimer(10, f)
+    print("started the timer")
     rep.start()
+    time.sleep(5)
+    print("stopped the timer")
+    rep.stop()
+    rep.stop()
